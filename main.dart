@@ -1,122 +1,338 @@
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(const LoboTourismApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LoboTourismApp extends StatelessWidget {
+  const LoboTourismApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Lobo Tourism Management',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        useMaterial3: true,
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          filled: true,
+          fillColor: Color(0xFFF7F9FA),
+          labelStyle: TextStyle(color: Colors.teal, fontSize: 13),
+          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.teal,
+            foregroundColor: Colors.white,
+            minimumSize: const Size.fromHeight(36),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+            textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.teal,
+            textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            minimumSize: Size(0, 0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LoginPage(),
+        '/dashboard': (context) => ResortDashboardApp(),
+       
+       
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _LoginPageState extends State<LoginPage> {
+  bool isSignIn = true;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildSocialButton(String text, IconData icon, Color color) {
+    return OutlinedButton.icon(
+      onPressed: () {},
+      icon: Icon(icon, size: 18, color: color),
+      label: Text(text,
+          style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13)),
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(32),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        side: BorderSide(color: color, width: 1.2),
+        foregroundColor: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+    );
+  }
+
+  void _handleSignIn() {
+    if (_formKey.currentState?.validate() ?? false) {
+      Navigator.pushReplacementNamed(context, '/dashboard');
+     
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFD7F2EE), Color(0xFFE9F7F6)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 360),
+              child: Card(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircleAvatar(
+                        backgroundColor: Colors.teal,
+                        radius: 28,
+                        child: Icon(Icons.travel_explore, color: Colors.white, size: 28),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text('Welcome Back!',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.teal)),
+                      const SizedBox(height: 5),
+                      const Text(
+                        'Enter your credentials to access the Tourism Admin Dashboard.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 13, color: Colors.black87),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // ✅ New Tab Toggle Design
+                      Container(
+                        height: 20,
+                        width: 290,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 195, 210, 209),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Stack(
+                          children: [
+                            AnimatedAlign(
+                              alignment: isSignIn ? Alignment.centerLeft : Alignment.centerRight,
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                width: 150,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Colors.teal,
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => setState(() => isSignIn = true),
+                                    child: Center(
+                                      child: Text(
+                                        'Sign In',
+                                        style: TextStyle(
+                                          color: isSignIn ? Colors.white : Colors.teal,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => setState(() => isSignIn = false),
+                                    child: Center(
+                                      child: Text(
+                                        'Sign Up',
+                                        style: TextStyle(
+                                          color: !isSignIn ? Colors.white : Colors.teal,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.email_outlined),
+                                labelText: 'Email',
+                              ),
+                              validator: (value) {
+                                if (value == null || !value.contains('@')) {
+                                  return 'Enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: _obscurePassword,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                labelText: 'Password',
+                                suffixIcon: IconButton(
+                                  icon: Icon(_obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() => _obscurePassword = !_obscurePassword);
+                                  },
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.length < 6) {
+                                  return 'Password must be at least 6 characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            if (!isSignIn) ...[
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                controller: _confirmPasswordController,
+                                obscureText: _obscureConfirmPassword,
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.lock),
+                                  labelText: 'Confirm Password',
+                                  suffixIcon: IconButton(
+                                    icon: Icon(_obscureConfirmPassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),
+                                    onPressed: () {
+                                      setState(() =>
+                                          _obscureConfirmPassword = !_obscureConfirmPassword);
+                                    },
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value != _passwordController.text) {
+                                    return 'Passwords do not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                            const SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () {},
+                                child: const Text('Forgot password?'),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            ElevatedButton.icon(
+                              onPressed: _handleSignIn,
+                              icon: const Icon(Icons.login),
+                              label: Text(isSignIn ? 'Sign In' : 'Sign Up'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('OR', style: TextStyle(fontSize: 13, color: Colors.black54)),
+                      const SizedBox(height: 8),
+                      _buildSocialButton('Continue with Google', Icons.g_mobiledata, Colors.red),
+                      const SizedBox(height: 8),
+                      _buildSocialButton('Continue with Facebook', Icons.facebook, Colors.blue),
+                      const SizedBox(height: 8),
+                      _buildSocialButton('Continue with Apple', Icons.apple, Colors.black),
+                      const SizedBox(height: 12),
+                      const Text.rich(
+                        TextSpan(
+                          text: 'By continuing, you agree to the updated ',
+                          children: [
+                            TextSpan(
+                              text: 'Terms of Service',
+                              style: TextStyle(decoration: TextDecoration.underline),
+                            ),
+                            TextSpan(text: ' and '),
+                            TextSpan(
+                              text: 'Privacy Policy',
+                              style: TextStyle(decoration: TextDecoration.underline),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
